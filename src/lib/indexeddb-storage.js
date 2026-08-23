@@ -34,7 +34,6 @@ function openDatabase() {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => {
-      console.warn("IndexedDB failed to open, falling back to chrome.storage");
       reject(request.error);
     };
 
@@ -186,8 +185,7 @@ export async function loadMemories() {
     }
 
     return memories;
-  } catch (err) {
-    console.warn("IndexedDB loadMemories failed:", err);
+  } catch {
     return null; // Signal to fallback
   }
 }
@@ -225,8 +223,7 @@ export async function saveMemory(key, value, importance = "called") {
       tx.oncomplete = () => resolve(true);
       tx.onerror = () => reject(tx.error);
     });
-  } catch (err) {
-    console.warn("IndexedDB saveMemory failed:", err);
+  } catch {
     return false;
   }
 }
@@ -269,8 +266,7 @@ export async function saveMemoriesBatch(writes) {
       tx.oncomplete = () => resolve({ success: true, savedKeys });
       tx.onerror = () => reject(tx.error);
     });
-  } catch (err) {
-    console.warn("IndexedDB saveMemoriesBatch failed:", err);
+  } catch {
     return { success: false, savedKeys: [] };
   }
 }
@@ -284,8 +280,7 @@ export async function deleteMemory(key) {
   try {
     await deleteValue(STORE_MEMORIES, key);
     return true;
-  } catch (err) {
-    console.warn("IndexedDB deleteMemory failed:", err);
+  } catch {
     return false;
   }
 }
@@ -303,8 +298,7 @@ export async function deleteMemoriesBatch(keys) {
       }
     });
     return true;
-  } catch (err) {
-    console.warn("IndexedDB deleteMemoriesBatch failed:", err);
+  } catch {
     return false;
   }
 }
@@ -314,8 +308,7 @@ export async function deleteMemoriesBatch(keys) {
 export async function loadSettings() {
   try {
     return await getValue(STORE_SETTINGS, "app_settings");
-  } catch (err) {
-    console.warn("IndexedDB loadSettings failed:", err);
+  } catch {
     return null;
   }
 }
@@ -324,8 +317,7 @@ export async function saveSettings(settings) {
   try {
     await setValue(STORE_SETTINGS, "app_settings", settings);
     return true;
-  } catch (err) {
-    console.warn("IndexedDB saveSettings failed:", err);
+  } catch {
     return false;
   }
 }
@@ -336,8 +328,7 @@ export async function loadSkills() {
   try {
     const records = await getAllValues(STORE_SKILLS);
     return records.map(r => r.value).filter(Boolean);
-  } catch (err) {
-    console.warn("IndexedDB loadSkills failed:", err);
+  } catch {
     return null;
   }
 }
@@ -351,8 +342,7 @@ export async function saveSkills(skills) {
       }
     });
     return true;
-  } catch (err) {
-    console.warn("IndexedDB saveSkills failed:", err);
+  } catch {
     return false;
   }
 }
@@ -379,8 +369,8 @@ export async function isMigrationComplete() {
 export async function markMigrationComplete() {
   try {
     await setValue(STORE_META, "migration_status", "complete");
-  } catch (err) {
-    console.warn("Failed to mark migration complete:", err);
+  } catch {
+    // ignored
   }
 }
 
@@ -419,10 +409,8 @@ export async function migrateFromChromeStorage() {
     }
 
     await markMigrationComplete();
-    console.log("Migration from chrome.storage.local to IndexedDB complete");
     return true;
-  } catch (err) {
-    console.warn("Migration failed:", err);
+  } catch {
     return false;
   }
 }

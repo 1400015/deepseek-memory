@@ -109,8 +109,7 @@ export async function saveMemoriesToStorage(memories) {
         [STORAGE_KEYS.memories]: memories,
       });
       return true;
-    } catch (err) {
-      console.warn("Failed to save memories to chrome.storage:", err);
+    } catch {
       return false;
     }
   }
