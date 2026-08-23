@@ -4,6 +4,13 @@ A Chrome extension that adds **persistent memory** and **custom skills** to [Dee
 
 > This is an unofficial, community-driven project. Not affiliated with DeepSeek.
 
+<img width="1366" height="616" alt="name" src="https://github.com/user-attachments/assets/fad585a9-d672-4d2a-ab5a-19745e9c7b7f" />
+
+<img width="1366" height="616" alt="name" src="https://github.com/user-attachments/assets/9c590cac-a23b-4553-94d5-d6aad2836c74" />
+
+<img width="1366" height="619" alt="model" src="https://github.com/user-attachments/assets/e73e5b69-a690-49ca-8214-277329587e4c" />
+
+
 ## Install
 
 ### Microsoft Edge (Recommended)
