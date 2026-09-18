@@ -59,6 +59,23 @@ async function init() {
   window.addEventListener("dsm:sc", () => {
     pushConfigToPage();
   });
+
+  // Listen for open drawer message from background script (extension icon click)
+  if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener((msg) => {
+      if (msg && msg.type === "DSM_OPEN_DRAWER") {
+        window.dispatchEvent(new CustomEvent("dsm:open"));
+      }
+    });
+  }
+
+  // Keyboard shortcut: Alt+M to open Memory & Skills
+  window.addEventListener("keydown", (e) => {
+    if (e.altKey && (e.key === "m" || e.key === "M")) {
+      e.preventDefault();
+      window.dispatchEvent(new CustomEvent("dsm:open"));
+    }
+  });
 }
 
 async function waitForBody() {

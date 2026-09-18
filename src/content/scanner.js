@@ -559,15 +559,9 @@ function isValidMemoryWrite(write, existing) {
     if (valueLower.includes(blacklisted)) return false;
   }
 
-  if (/\[.*?\]|\{.*?\}|<.*?>/.test(write.value)) return false;
+  // Only reject if the ENTIRE value is a bracketed placeholder like [user_name]
+  if (/^\[[^\]]*\]$/.test(write.value.trim()) || /^<[^>]*>$/.test(write.value.trim())) return false;
   if (write.key === "user_name" && write.value.length < 2) return false;
-
-  if (write.importance === "always" && existing[write.key]) {
-    const existingVal = existing[write.key].value.toLowerCase();
-    if (write.key === "user_name" && existingVal !== valueLower) {
-      if (valueLower.length < 3 || /\d/.test(valueLower)) return false;
-    }
-  }
 
   return true;
 }
@@ -582,11 +576,12 @@ async function saveMemoryWrites(writes) {
       if (!isValidMemoryWrite(write, existing)) continue;
 
       const existingEntry = existing[write.key];
-      if (existingEntry && existingEntry.value === write.value) continue;
+      if (existingEntry && existingEntry.value === write.value && existingEntry.importance === write.importance) continue;
 
       existing[write.key] = {
         value: write.value,
         importance: write.importance,
+        updatedAt: Date.now(),
       };
       changed = true;
       savedKeys.push(write.key);
@@ -597,6 +592,13 @@ async function saveMemoryWrites(writes) {
 
       const { saveMemoriesToStorage } = await import("./storage.js");
       await saveMemoriesToStorage(existing);
+
+      const { pushConfigToPage } = await import("./bridge.js");
+      pushConfigToPage();
+
+      if (state.ui) {
+        state.ui.refreshMemories();
+      }
 
       if (savedKeys.length > 0) {
         showInlineNotification(savedKeys);

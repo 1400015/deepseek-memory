@@ -16,7 +16,8 @@
       "content": "Content",
       "description": "Description",
       "none": "None",
-      "working": "Working..."
+      "working": "Working...",
+      "add": "Add"
     },
     "drawer": {
       "title": "DeepSeek Memory",
@@ -899,7 +900,9 @@
       "en": "English",
       "tr": "Türkçe",
       "ru": "Russian",
-      "zh-cn": "简体中文"
+      "zh-cn": "简体中文",
+      "ja": "日本語",
+      "bn": "বাংলা"
     },
     "apiPlayground": {
       "title": "API Playground",

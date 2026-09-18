@@ -57,19 +57,22 @@
 }
 
 /* ── Light Theme Tokens ── */
-:root {
+:root,
+body.light,
+body:not(.dark) {
   /* DeepSeek's actual light mode palette */
   --dsm-bg-panel: #ffffff;
   --dsm-bg-elevated: #f7f7f8;
-  --dsm-bg-hover: #f0f0f2;
-  --dsm-bg-input: #ffffff;
+  --dsm-bg-hover: rgba(38, 49, 72, 0.05);
+  --dsm-bg-input: rgb(241, 243, 245);
+  --dsm-nav-active-bg: rgba(38, 49, 72, 0.06);
   --dsm-bg-chat-user: #f4f4f5;
   --dsm-bg-chat-assistant: #ffffff;
   --dsm-border: rgba(0, 0, 0, 0.08);
   --dsm-border-hover: rgba(0, 0, 0, 0.15);
-  --dsm-text-primary: #1a1a1a;
-  --dsm-text-secondary: #666666;
-  --dsm-text-tertiary: #999999;
+  --dsm-text-primary: rgb(15, 17, 21);
+  --dsm-text-secondary: rgb(90, 95, 105);
+  --dsm-text-tertiary: rgb(150, 155, 165);
   --dsm-accent: #4d6bfe;
   --dsm-accent-hover: #3d5be0;
   --dsm-accent-glow: rgba(77, 107, 254, 0.1);
@@ -79,32 +82,34 @@
   --dsm-danger-border: rgba(239, 68, 68, 0.3);
   --dsm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
   --dsm-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  --dsm-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.12);
-  --dsm-radius-sm: 6px;
-  --dsm-radius: 10px;
-  --dsm-radius-lg: 14px;
-  --dsm-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --dsm-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+  --dsm-radius-sm: 8px;
+  --dsm-radius: 12px;
+  --dsm-radius-lg: 24px;
+  --dsm-transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ── Dark Theme Tokens ── */
 /* DeepSeek uses data-ds-dark-theme attribute on <body> or <html> */
 html[data-ds-dark-theme="true"],
 body[data-ds-dark-theme="true"],
+body[data-ds-dark-theme="dark"],
 html.dark, body.dark,
 .dark :root,
 [data-theme="dark"],
 [data-mode="dark"] {
-  --dsm-bg-panel: #292a2d;
-  --dsm-bg-elevated: #1e1e1e;
+  --dsm-bg-panel: rgb(44, 44, 46);
+  --dsm-bg-elevated: rgb(53, 54, 56);
   --dsm-bg-hover: rgba(255, 255, 255, 0.06);
-  --dsm-bg-input: #2a2a2a;
+  --dsm-bg-input: rgb(67, 69, 74);
+  --dsm-nav-active-bg: rgba(255, 255, 255, 0.08);
   --dsm-bg-chat-user: #2a2a2a;
-  --dsm-bg-chat-assistant: #292a2d;
+  --dsm-bg-chat-assistant: rgb(44, 44, 46);
   --dsm-border: rgba(255, 255, 255, 0.08);
   --dsm-border-hover: rgba(255, 255, 255, 0.15);
-  --dsm-text-primary: #e8e8e8;
-  --dsm-text-secondary: #a1a1aa;
-  --dsm-text-tertiary: #71717a;
+  --dsm-text-primary: rgb(249, 250, 251);
+  --dsm-text-secondary: rgb(175, 180, 190);
+  --dsm-text-tertiary: rgb(120, 125, 135);
   --dsm-accent: #4d6bfe;
   --dsm-accent-hover: #6380ff;
   --dsm-accent-glow: rgba(77, 107, 254, 0.15);
@@ -114,7 +119,10 @@ html.dark, body.dark,
   --dsm-danger-border: rgba(248, 113, 113, 0.3);
   --dsm-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
   --dsm-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  --dsm-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --dsm-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --dsm-radius-sm: 8px;
+  --dsm-radius: 12px;
+  --dsm-radius-lg: 24px;
 }
 
 /* ── Hidden Messages ── */
@@ -205,10 +213,15 @@ html.dark, body.dark,
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.36);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
   animation: dsm-fade-in 0.15s ease-out;
+}
+
+body.dark .dsm-overlay,
+body[data-ds-dark-theme="dark"] .dsm-overlay {
+  background: rgba(0, 0, 0, 0.6);
 }
 
 @keyframes dsm-fade-in {
@@ -217,20 +230,26 @@ html.dark, body.dark,
 }
 
 .dsm-modal {
-  width: min(90vw, 640px);
-  height: min(80vh, 520px);
+  width: min(94vw, 760px);
+  height: min(88vh, 500px);
   display: flex;
   flex-direction: column;
-  border-radius: 20px;
+  border-radius: 24px;
   background: var(--dsm-bg-panel);
-  box-shadow: var(--dsm-shadow-lg), 0 0 0 1px var(--dsm-border);
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 1px 0px, rgba(0, 0, 0, 0.08) 0px 12px 32px 0px;
   color: var(--dsm-text-primary);
   overflow: hidden;
-  animation: dsm-modal-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dsm-modal-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: none;
+}
+
+body.dark .dsm-modal,
+body[data-ds-dark-theme="dark"] .dsm-modal {
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 1px 0px, rgba(0, 0, 0, 0.3) 0px 12px 32px 0px;
 }
 
 @keyframes dsm-modal-in {
-  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  from { opacity: 0; transform: scale(0.96) translateY(6px); }
   to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
@@ -239,16 +258,16 @@ html.dark, body.dark,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--dsm-border);
+  padding: 24px 28px 12px;
+  border-bottom: none;
   flex-shrink: 0;
 }
 
 .dsm-title {
   margin: 0;
-  font-size: 17px;
-  font-weight: 600;
-  letter-spacing: -0.01em;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
   color: var(--dsm-text-primary);
 }
 
@@ -256,15 +275,15 @@ html.dark, body.dark,
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border: none;
-  border-radius: var(--dsm-radius-sm);
+  border-radius: 9999px;
   background: transparent;
-  color: var(--dsm-text-tertiary);
+  color: var(--dsm-text-secondary);
   cursor: pointer;
   padding: 0;
-  transition: all var(--dsm-transition);
+  transition: all 0.15s ease;
 }
 
 .dsm-close:hover {
@@ -278,35 +297,37 @@ html.dark, body.dark,
   flex: 1;
   min-height: 0;
   overflow: hidden;
+  padding-bottom: 12px;
 }
 
 /* ── Sidebar ── */
 .dsm-sidebar {
-  width: 180px;
+  width: 172px;
   flex-shrink: 0;
-  padding: 12px 10px;
-  border-right: 1px solid var(--dsm-border);
+  padding: 8px 16px 16px 20px;
+  border-right: none;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .dsm-nav {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   width: 100%;
-  padding: 10px 14px;
+  height: 42px;
+  padding: 0 14px;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
   color: var(--dsm-text-secondary);
   background: transparent;
   border: none;
-  border-radius: var(--dsm-radius-sm);
+  border-radius: 12px;
   cursor: pointer;
   text-align: left;
-  transition: all var(--dsm-transition);
+  transition: all 0.15s ease;
   font-family: inherit;
 }
 
@@ -316,20 +337,227 @@ html.dark, body.dark,
 }
 
 .dsm-nav-active {
-  background: var(--dsm-bg-hover);
+  background: var(--dsm-nav-active-bg);
   color: var(--dsm-text-primary);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .dsm-nav svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
-  opacity: 0.5;
+  opacity: 0.6;
 }
 
 .dsm-nav-active svg {
-  opacity: 0.9;
+  opacity: 1;
+  color: var(--dsm-accent);
+}
+
+/* ── DeepSeek Native Settings Dropdown Entry ── */
+.dsm-settings-entry {
+  display: flex !important;
+  align-items: center !important;
+  height: 40px !important;
+  min-height: 24px !important;
+  padding: 8px 10px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+  cursor: pointer !important;
+  transition: background-color 0.15s ease !important;
+  user-select: none !important;
+}
+
+.dsm-settings-entry .ds-dropdown-menu-option__icon {
+  width: 16px !important;
+  height: 16px !important;
+  margin-right: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+}
+
+.dsm-settings-entry .ds-dropdown-menu-option__label {
+  flex: 1 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 24px !important;
+}
+
+body.light .dsm-settings-entry,
+body:not(.dark) .dsm-settings-entry {
+  color: rgb(15, 17, 21) !important;
+}
+
+body.light .dsm-settings-entry:hover,
+body.light .dsm-settings-entry.ds-dropdown-menu-option--hover,
+body:not(.dark) .dsm-settings-entry:hover,
+body:not(.dark) .dsm-settings-entry.ds-dropdown-menu-option--hover {
+  background-color: rgb(241, 243, 245) !important;
+}
+
+body.dark .dsm-settings-entry,
+body[data-ds-dark-theme="dark"] .dsm-settings-entry {
+  color: rgb(249, 250, 251) !important;
+}
+
+body.dark .dsm-settings-entry:hover,
+body.dark .dsm-settings-entry.ds-dropdown-menu-option--hover,
+body[data-ds-dark-theme="dark"] .dsm-settings-entry:hover,
+body[data-ds-dark-theme="dark"] .dsm-settings-entry.ds-dropdown-menu-option--hover {
+  background-color: rgb(67, 69, 74) !important;
+}
+
+/* ── DeepSeek Native Form Controls ── */
+.dsm-select {
+  height: 36px;
+  min-width: 90px;
+  padding: 0 14px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-family: inherit;
+  border: 1px solid transparent;
+  background-color: var(--dsm-bg-input);
+  color: var(--dsm-text-primary);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.dsm-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.dsm-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.dsm-switch-track {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--dsm-border-hover);
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+
+body.dark .dsm-switch-track,
+body[data-ds-dark-theme="dark"] .dsm-switch-track {
+  background-color: rgb(75, 78, 85);
+}
+
+.dsm-switch-track::before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 2px;
+  bottom: 2px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dsm-switch input:checked + .dsm-switch-track {
+  background-color: var(--dsm-accent);
+}
+
+.dsm-switch input:checked + .dsm-switch-track::before {
+  transform: translateX(20px);
+}
+
+/* ── Settings Panel Native DeepSeek Row Styles ── */
+.dsm-settings-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.dsm-toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 54px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  gap: 16px;
+}
+
+body.dark .dsm-toggle-row,
+body[data-ds-dark-theme="dark"] .dsm-toggle-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dsm-toggle-row:last-of-type {
+  border-bottom: none;
+}
+
+.dsm-toggle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dsm-toggle-label {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dsm-text-primary);
+  line-height: 20px;
+}
+
+.dsm-toggle-hint {
+  font-size: 12px;
+  color: var(--dsm-text-secondary);
+  line-height: 16px;
+}
+
+.dsm-select-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dsm-select-chevron {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: var(--dsm-text-secondary);
+}
+
+.dsm-settings-footer {
+  margin-top: 32px;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.dsm-github-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--dsm-text-secondary);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.dsm-github-link:hover {
+  opacity: 1;
+  color: var(--dsm-accent);
 }
 
 /* ── Content Area ── */

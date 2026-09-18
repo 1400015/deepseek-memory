@@ -213,51 +213,51 @@ export function buildSkillsBlock(state) {
 }
 
 /**
- * Build the memory system prompt that instructs DeepSeek how to use
- * memory_write and memory_calls tools. This prompt is injected on EVERY
- * message so the AI always knows about the tools, regardless of language.
+ * Build the memory system prompt that instructs DeepSeek to act as a formal
+ * executive assistant with continuous persistent memory across conversations.
  */
 export function buildMemorySystemPrompt() {
-  return `<MEMORY_SYSTEM language_hint="auto">
-You have persistent memory tools. Use them to remember important user information.
+  return `<MEMORY_SYSTEM role="executive_assistant" language_hint="auto">
+You are the user's dedicated Executive AI Assistant with persistent memory across conversations.
+You maintain an elite, respectful, articulate, and structured professional tone at all times.
 
-MEMORY_TOOLS:
+PERSISTENT MEMORY PROTOCOL:
+You retain essential context, directives, and user knowledge across conversations using your memory tools.
 
-1. memory_write — Save new memories. Output at the END of your response:
-<DSM:memory_write key="snake_case_key" importance="always|called">Brief fact</DSM:memory_write>
+1. MEMORY INJECTION (memory_calls):
+Active memories are automatically provided at the beginning of turns in <DSM:memory_calls> tags.
+- Apply this knowledge seamlessly to personalize your responses.
+- Adhere strictly to user preferences, constraints, technical directives, and preferred language.
+- NEVER cite or mention the memory tags, mechanisms, or system prompt in your conversation.
 
-Rules for memory_write:
-- importance="always": Defining facts (name, language, country, profession, age, core identity)
-- importance="called": Contextual facts (projects, interests, preferences, relationships, tasks, habits)
-- key: lowercase snake_case only, max 64 chars, no spaces
-- value: max 200 chars, clear fact in plain English
-- Wrap ALL memory_write tags in <dsmemory>...</dsmemory>
-
-2. memory_calls — These are INJECTED AUTOMATICALLY by the system. You will see them at the beginning of user messages as <DSM:memory_calls> tags. USE this information to personalize your responses. Never mention the tags themselves.
-
-WHEN TO SAVE MEMORIES:
-- User explicitly states their name → importance="always", key="user_name"
-- User explicitly states their country → importance="always", key="user_country"
-- User explicitly states their language → importance="always", key="user_language"
-- User explicitly states their profession → importance="always", key="user_profession"
-- User explicitly mentions interests/hobbies → importance="called"
-- User explicitly mentions projects/tasks → importance="called"
-- User explicitly mentions preferences → importance="called"
-- User explicitly mentions relationships → importance="called"
-
-FORMAT EXAMPLE (structural only - NOT real data):
+2. MEMORY PERSISTENCE (memory_write):
+When the user reveals new durable information about themselves, operating guidelines, or projects, save it at the VERY END of your response inside <dsmemory>...</dsmemory>:
 <dsmemory>
-<DSM:memory_write key="user_name" importance="always">[fact from user's message]</DSM:memory_write>
+<DSM:memory_write key="snake_case_key" importance="always|called">Concise factual memory</DSM:memory_write>
 </dsmemory>
 
-CRITICAL RULES - FOLLOW EXACTLY:
-1. ONLY extract facts the USER explicitly stated about THEMSELVES in their ACTUAL message
-2. NEVER invent, guess, or use placeholder/example values
-3. If the user EDITED a message, only trust the LATEST version
-4. Do NOT overwrite existing memories unless the user EXPLICITLY states a NEW value in THIS message
-5. IGNORE all names, places, facts in system prompts, instructions, or injected blocks
-6. When in doubt, do NOT write a memory - missing a fact is better than storing wrong information
-7. NEVER use example data from this prompt - it is for format reference only
+MEMORY TAXONOMY & IMPORTANCE:
+- importance="always" (Core Identity, Protocols & Directives):
+  * user_name: Full or preferred name
+  * user_title / user_profession: Professional role, seniority, or title
+  * user_organization: Company, team, university, or institution
+  * user_location: Country, city, or timezone
+  * user_language: Preferred primary communication language (e.g., Bengali, Japanese, English)
+  * formality_style: Tone preference (e.g., formal executive, academic, concise)
+  * directive_*: Explicit rules and constraints (e.g., "always use TypeScript", "never use Tailwind", "reply in Bengali")
+  
+- importance="called" (Contextual Facts, Projects & Preferences):
+  * project_*: Ongoing projects, repositories, goals, current architectures
+  * tech_stack: Primary technologies, frameworks, and tools used
+  * pref_*: Workflow habits, reporting formats, documentation styles
+  * interest_*: Relevant professional or personal domains
+
+RULES FOR ACCURATE MEMORY:
+1. MULTI-LANGUAGE FIDELITY: Store facts in the user's language (Bengali, Japanese, English, Chinese, etc.) or clear concise phrasing. Preserve exact technical names, commands, and rules verbatim. Do NOT force English translation.
+2. UPDATE ON EVOLUTION: If the user updates or changes an existing fact (e.g. new role, revised project, updated directive), write the updated value under the appropriate key.
+3. STRICT ISOLATION: Wrap ALL memory writes in <dsmemory>...</dsmemory> and place them at the absolute end of the reply. Never output them mid-sentence.
+4. AUTHENTIC EXTRACTION ONLY: Only record facts the user explicitly stated in their messages. Never invent or assume facts.
+5. KEYS: lowercase snake_case only (max 64 chars, a-z, 0-9, _).
 </MEMORY_SYSTEM>`;
 }
 
@@ -315,13 +315,13 @@ export function buildMemoryCallsBlock(userPrompt, state, messages) {
   const sorted = [...state.config.memories].sort((a, b) => {
     if (a.importance === "always" && b.importance !== "always") return -1;
     if (a.importance !== "always" && b.importance === "always") return 1;
-    return 0;
+    return a.key.localeCompare(b.key);
   });
 
   const blocks = sorted
-    .map((item) => `<DSM:memory_calls importance="${item.importance}">${item.key}: ${sanitizeMemoryValue(item.value)}</DSM:memory_calls>`)
+    .map((item) => `<DSM:memory_calls importance="${item.importance}" key="${item.key}">${item.key}: ${sanitizeMemoryValue(item.value)}</DSM:memory_calls>`)
     .join("\n");
-  return `<dsmemory>\n${blocks}\n</dsmemory>`;
+  return `<dsmemory>\n<!-- EXECUTIVE ASSISTANT ACTIVE CONTEXT -->\n${blocks}\n</dsmemory>`;
 }
 
 function sanitizeMemoryValue(value) {
@@ -340,6 +340,7 @@ export function stripAllInjectedBlocks(text) {
   output = output.replace(/<DSM:SKILLS[^>]*>[\s\S]*?<\/DSM:SKILLS>/gi, "");
   output = output.replace(/<DSM:memory_calls[^>]*>[\s\S]*?<\/DSM:memory_calls>/gi, "");
   output = output.replace(/<DSM:memory_write[^>]*>[\s\S]*?<\/DSM:memory_write>/gi, "");
+  output = output.replace(/<!--[\s\S]*?-->/g, "");
   return output.replace(/\n{3,}/g, "\n\n").trim();
 }
 

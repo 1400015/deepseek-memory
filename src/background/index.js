@@ -82,6 +82,17 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return false;
 });
 
+// ── Open DeepSeek Memory on Extension Icon Click ──
+if (typeof chrome !== "undefined" && chrome.action && chrome.action.onClicked) {
+  chrome.action.onClicked.addListener(async (tab) => {
+    if (tab && tab.id && tab.url && tab.url.includes("chat.deepseek.com")) {
+      chrome.tabs.sendMessage(tab.id, { type: "DSM_OPEN_DRAWER" }).catch(() => {});
+    } else {
+      chrome.tabs.create({ url: "https://chat.deepseek.com" });
+    }
+  });
+}
+
 /**
  * Normalize skill URLs:
  * - GitHub repo page → raw README URL
