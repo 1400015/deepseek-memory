@@ -6,7 +6,7 @@ A Chrome extension that adds **persistent memory** and **custom skills** to [Dee
 
 1.
 
-<img width="1366" height="616" alt="name" src="https://github.com/user-attachments/assets/fad585a9-d672-4d2a-ab5a-19745e9c7b7f" />
+<img width="1366" height="640" alt="image" src="https://github.com/user-attachments/assets/ead72b36-68c8-4548-ace7-8b5cff49264a" />
 
 2.
 
@@ -14,7 +14,8 @@ A Chrome extension that adds **persistent memory** and **custom skills** to [Dee
 
 3.
 
-<img width="1366" height="619" alt="model" src="https://github.com/user-attachments/assets/e73e5b69-a690-49ca-8214-277329587e4c" />
+<img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/25c8c3aa-7439-4845-8870-9315b5197261" />
+
 
 
 ## Install
