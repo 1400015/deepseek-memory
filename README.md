@@ -10,10 +10,6 @@ A Chrome extension that adds **persistent memory** and **custom skills** to [Dee
 
 2.
 
-<img width="264" height="615" alt="memory" src="https://github.com/user-attachments/assets/a1267f83-3fae-442a-97b1-bf0eedc64746" />
-
-3.
-
 <img width="1366" height="643" alt="image" src="https://github.com/user-attachments/assets/25c8c3aa-7439-4845-8870-9315b5197261" />
 
 
