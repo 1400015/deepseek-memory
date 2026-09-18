@@ -100,19 +100,21 @@ function copyRecursiveSync(src, dest) {
 }
 
 async function generateIcons(distDir) {
-  const svgPath = resolve(__dirname, "icon.svg");
-  if (!existsSync(svgPath)) {
-    console.warn("icon.svg not found — skipping icon generation.");
+  const iconSource = existsSync(resolve(__dirname, "icon.png"))
+    ? resolve(__dirname, "icon.png")
+    : resolve(__dirname, "icon.svg");
+  if (!existsSync(iconSource)) {
+    console.warn("icon.png or icon.svg not found — skipping icon generation.");
     return;
   }
   const sizes = [16, 48, 128];
   for (const size of sizes) {
-    await sharp(svgPath)
+    await sharp(iconSource)
       .resize(size, size)
       .png()
       .toFile(resolve(distDir, `icon${size}.png`));
   }
-  console.log("Icons generated: icon16.png, icon48.png, icon128.png");
+  console.log("Icons generated from icon.png: icon16.png, icon48.png, icon128.png");
 }
 
 async function run() {
